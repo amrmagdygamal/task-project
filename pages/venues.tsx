@@ -153,7 +153,7 @@ const VenuesPage = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {venues.map((venue) => (
-            <div key={venue.id} className="bg-white rounded-xl shadow-lg p-4 flex flex-col h-full focus-within:ring-2 focus-within:ring-indigo-400" tabIndex={0} aria-label={`Venue: ${venue.name}`}>
+            <div key={venue.id} className="bg-white rounded-xl shadow-lg p-4 fl-co-st-st h-full focus-within:ring-2 focus-within:ring-indigo-400" tabIndex={0} aria-label={`Venue: ${venue.name}`}>
               <div className="relative w-full h-40 mb-3">
                 {venue.image_url && (
                   <Image 
@@ -169,7 +169,7 @@ const VenuesPage = () => {
               <p className="mb-1 text-gray-700"><b>Address:</b> {venue.address}</p>
               <p className="mb-1 text-gray-700"><b>Capacity:</b> {venue.capacity}</p>
               <p className="mb-2 text-indigo-700 font-semibold"><b>Day Price:</b> {venue.dayprice}</p>
-              <div className="mt-auto flex flex-col gap-2 sm:flex-row">
+              <div className="mt-auto fl-co-st-st gap-2 sm:flex-row">
                 <a href={`/venues/${venue.id}`} className="px-5 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 text-center text-base" aria-label={`View details for ${venue.name}`}>View Details</a>
                 <button onClick={() => handleDownloadPDF(venue)} className="px-5 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400 text-base" aria-label={`Download PDF for ${venue.name}`}>Download PDF</button>
               </div>
@@ -182,7 +182,7 @@ const VenuesPage = () => {
           </div>
         )}
         {loading && (
-          <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
+          <div className="fl-ro-ce-ce py-12" role="status" aria-live="polite">
             <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-label="Loading spinner">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />

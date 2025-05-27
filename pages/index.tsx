@@ -28,7 +28,7 @@ const IndexPage = () => {
         </header>
 
         {loading ? (
-          <div className="flex justify-center items-center py-12">
+          <div className="fl-ro-ce-ce py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
           </div>
         ) : venues.length === 0 ? (
@@ -41,29 +41,25 @@ const IndexPage = () => {
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="relative h-48">
-                  {venue.images?.[0]?.url ? (
-                    <Image
-                      src={venue.images[0].url}
-                      alt={venue.images[0].alt || venue.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">No image available</span>
-                    </div>
-                  )}
+                  {venue.image_url && (
+                                    <Image 
+                                      src={venue.image_url} 
+                                      alt={venue.name} 
+                                      fill 
+                                      className="object-cover rounded-lg"
+                                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                    />
+                                  )}
                 </div>
                 
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-800 mb-2">{venue.name}</h2>
                   <p className="text-gray-600 mb-4 line-clamp-2">{venue.description}</p>
-                  <div className="flex items-center justify-between">
+                  <div className="fl-ro-ce-be">
                     <div className="text-indigo-600 font-semibold">${venue.dayprice}/day</div>
                     <Link
                       href={`/venues/${venue.id}`}
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="inline-fl-ro-ce-stpx-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       View Details
                     </Link>

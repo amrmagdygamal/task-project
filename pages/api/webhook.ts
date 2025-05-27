@@ -35,7 +35,8 @@ export default async function handler(
     return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 
-  // Handle the checkout.session.completed event
+  // Handle the event
+  // console.log('Received event:', event.type);
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata!;
@@ -52,7 +53,6 @@ export default async function handler(
             endDate: metadata.end_date,
             name: metadata.name,
             phone: metadata.phone,
-            status: 'confirmed',
             payment_id: session.payment_intent as string,
             amount_paid: session.amount_total ? session.amount_total / 100 : 0,
             days: parseInt(metadata.days),

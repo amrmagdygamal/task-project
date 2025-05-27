@@ -11,13 +11,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'process not allowed' });
   }
 
   try {
     const { venue_id, name, phone, startDate, endDate, amount, days, userId } = req.body;
 
-    // Get venue details for the line items
+    // fetch venue details 
     const { data: venue } = await supabase
       .from('venues')
       .select('name, dayprice')

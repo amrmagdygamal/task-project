@@ -11,7 +11,6 @@ interface Booking {
   phone: string;
   startDate: string;
   endDate: string;
-  status: string;
   amount_paid: number;
   days: number;
   created_at: string;
@@ -63,7 +62,7 @@ const BookingsPage = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="fl-ro-ce-ce min-h-screen">
           <div className="animate-spin h-8 w-8 border-4 border-indigo-500 rounded-full border-t-transparent"></div>
         </div>
       </Layout>

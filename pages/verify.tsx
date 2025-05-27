@@ -7,7 +7,7 @@ const VerifyPage = () => {
   const email = router.query.email as string;
 
   return (    <Layout title="Verify Email">      
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-100 to-white">
+      <div className="fl-co-ce-ce min-h-screen bg-gradient-to-br from-indigo-100 to-white">
         <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full border border-indigo-100">
           <div className="text-center">
             <svg

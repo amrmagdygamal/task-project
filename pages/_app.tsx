@@ -12,10 +12,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         setSession(session)
-        // Get role from user metadata
+        
         const role = session.user.user_metadata?.role
 
-        // Try to get role from user_details if not in metadata
+        // console.log('Initial session:', session)
+        // console.log('Initial role from metadata:', role)
         if (!role) {
           const { data: profileData } = await supabase
             .from('user_details')

@@ -19,8 +19,8 @@ const VenueDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const {
-    venue, loading, reviews, reviewForm, reservations, booking, bookingErrors, bookingSuccess,
-    setVenue, setLoading, setReviews, setReviewForm, setReservations, setBooking, setBookingErrors, setBookingSuccess
+    venue, loading, booking, bookingErrors, bookingSuccess,
+    setVenue, setLoading, setReservations, setBooking, setBookingErrors, setBookingSuccess
   } = useVenueDetailStore();
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | '' }>({ message: '', type: '' });
   const [actionLoading, setActionLoading] = useState(false);
@@ -33,14 +33,6 @@ const VenueDetail = () => {
       if (!error && data) setVenue(data);
       setLoading(false);
     };
-    const fetchReviews = async () => {
-      const { data, error } = await supabase
-        .from('reviews')
-        .select('*, user:users(full_name, profile)')
-        .eq('venue_id', id)
-        .order('created_at', { ascending: false });
-      if (!error && data) setReviews(data);
-    };
     const fetchReservations = async () => {
       const { data, error } = await supabase
         .from('reservations')
@@ -50,9 +42,8 @@ const VenueDetail = () => {
       if (!error && data) setReservations(data);
     };
     fetchVenue();
-    fetchReviews();
     fetchReservations();
-  }, [id, setVenue, setLoading, setReviews, setReservations]);
+  }, [id, setVenue, setLoading, setReservations]);
   const handleDownloadPDF = async () => {
     if (!venue) return;
     const pdfDoc = await PDFDocument.create();
@@ -197,46 +188,13 @@ const VenueDetail = () => {
     setActionLoading(false);
   };
 
-  const handleReview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!venue || !session) return;
-    setActionLoading(true);
-    const { error } = await supabase.from('reviews').insert([
-      {
-        venue_id: venue.id,
-        userId: session.user.id,
-        rating: reviewForm.rating,
-        comment: reviewForm.comment,
-        created_at: new Date().toISOString(),
-      },
-    ]);
-    if (!error) {
-      setReviewForm({ rating: 5, comment: '' });
-      const { data } = await supabase
-        .from('reviews')
-        .select('*, user:users(full_name, profile)')
-        .eq('venue_id', id)
-        .order('created_at', { ascending: false });
-      setReviews(data || []);
-      setToast({ message: 'Review submitted!', type: 'success' });
-    } else {
-      setToast({ message: 'Review failed. Please try again.', type: 'error' });
-    }
-    setActionLoading(false);
-  };
-  // Calculate total price based on number of days
-  const calculateTotalPrice = (startDate: string, endDate: string, dayPrice: number) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays * dayPrice;
-  };
+
+
 
   // Toast auto-hide
   useEffect(() => {
     if (toast.message) {
-      const t = setTimeout(() => setToast({ message: '', type: '' }), 2500);
+      const t = setTimeout(() => setToast({ message: '', type: '' }), 2000);
       return () => clearTimeout(t);
     }
   }, [toast]);
@@ -253,7 +211,6 @@ const VenueDetail = () => {
         <p className="mb-1"><b>Capacity:</b> {venue?.capacity}</p>
         <p className="mb-1"><b>Day Price:</b> <span className="text-indigo-700 font-semibold">{venue?.dayprice}</span></p>
         <p className="mb-1"><b>Description:</b> {venue?.description}</p>
-        <p className="mb-4"><b>Created:</b> {venue?.created_at}</p>
         <button
           className="mb-4 px-6 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-green-400"
           onClick={handleDownloadPDF}
@@ -280,46 +237,17 @@ const VenueDetail = () => {
           <label htmlFor="booking-end-date" className="sr-only">End Date</label>
           <input id="booking-end-date" name="endDate" type="date" value={booking.endDate} onChange={e => setBooking({ ...booking, endDate: e.target.value })} required className="w-full p-3 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 text-base" aria-label="End Date" />
           {bookingErrors.endDate && <div className="text-red-500 text-sm" role="alert">{bookingErrors.endDate}</div>}
-          <div className="flex flex-col sm:flex-row gap-2 mt-2">
+          <div className="fl-co-st-st sm:flex-row gap-2 mt-2">
             <button type="submit" className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base" aria-label="Book this venue">Book</button>
           </div>
         </form>
         )}
-        <hr className="my-6" />
-        <h2 className="text-xl font-semibold mb-2 text-indigo-700" tabIndex={0}>Leave a review</h2>
-        {session && (
-        <form onSubmit={handleReview} className="space-y-3 mt-6" autoComplete="off">
-          <label htmlFor="review-rating" className="block font-medium">Rating:</label>
-          <select id="review-rating" name="rating" value={reviewForm.rating} onChange={e => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })} className="ml-0 sm:ml-2 p-2 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 text-base" aria-label="Rating">
-            {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
-          </select>
-          <label htmlFor="review-comment" className="sr-only">Your review</label>
-          <textarea id="review-comment" name="comment" value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })} required placeholder="Your review" className="w-full p-3 border-2 border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-400 text-base" aria-label="Your review" />
-          <button type="submit" className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base" aria-label="Submit review">Submit Review</button>
-        </form>
-        )}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-2 text-indigo-700" tabIndex={0}>Reviews</h3>
-          {reviews.length === 0 ? (
-            <div className="text-gray-400">No reviews yet.</div>
-          ) : (
-            <ul className="space-y-2">
-              {reviews.map((r, i) => (
-                <li key={i} className="border-b last:border-b-0 pb-2" tabIndex={0} aria-label={`Review by ${r.user?.full_name || r.userId}`}> 
-                  <div className="font-semibold">{r.user?.full_name || r.userId}</div>
-                  <div className="text-yellow-500" aria-label={`Rating: ${r.rating} out of 5`}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</div>
-                  <div>{r.comment}</div>
-                  <div className="text-xs text-gray-400">{r.created_at}</div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+  
         {toast.message && (
           <div className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition-all duration-300 ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`} role="status" aria-live="polite">{toast.message}</div>
         )}
         {(loading || actionLoading) ? (
-          <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
+          <div className="fl-ro-ce-ce py-12" role="status" aria-live="polite">
             <svg
               className="animate-spin h-8 w-8 text-indigo-600 focus:outline-none"
               xmlns="http://www.w3.org/2000/svg"

@@ -3,12 +3,6 @@ export interface VenueImage {
   alt: string;
 }
 
-export interface VenueReview {
-  userId: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-}
 
 export interface VenueReservation {
   userId: string;
@@ -39,7 +33,6 @@ export interface Booking {
   phone: string;
   startDate: string;
   endDate: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
   created_at: string;
 }
 

@@ -42,12 +42,7 @@ export interface VenuesDetails {
     alt: string;
   }>;
   available: boolean;
-  reviews: Array<{
-    userId: string;
-    rating: number;
-    comment: string;
-    created_at: string;
-  }>;
+
   reservations: Array<{
     userId: string;
     startDate: string;

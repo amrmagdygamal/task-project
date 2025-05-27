@@ -30,19 +30,19 @@ const SignupRolePage = () => {
               </div>
               
               <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                   List and manage your venues
                 </li>
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                   Track bookings and revenue
                 </li>
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
@@ -75,19 +75,19 @@ const SignupRolePage = () => {
               </div>
 
               <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                   Browse available venues
                 </li>
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                   Make and manage bookings
                 </li>
-                <li className="flex items-center text-gray-600">
+                <li className="fl-ro-ce-sttext-gray-600">
                   <svg className="h-4 w-4 text-green-500 mr-2" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
