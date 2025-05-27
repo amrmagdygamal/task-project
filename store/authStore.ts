@@ -141,7 +141,7 @@ export const useAuthStore = create<AuthState>((set) => ({
               full_name: fullName,
               role: role
             },
-            emailRedirectTo: 'https://task-project-flax-kappa.vercel.app/dashboard'
+            emailRedirectTo: encodeURI('https://task-project-flax-kappa.vercel.app/dashboard')
           }
         });
 
