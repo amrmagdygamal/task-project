@@ -15,9 +15,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
-    flowType: 'pkce',
-    site: 'https://task-project-flax-kappa.vercel.app',
-    redirectTo: 'https://task-project-flax-kappa.vercel.app/dashboard'
+    flowType: 'pkce'
   }
 });
 

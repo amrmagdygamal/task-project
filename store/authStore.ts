@@ -159,21 +159,6 @@ export const useAuthStore = create<AuthState>((set) => ({
             error: 'No user data received' 
           };
         }
-
-        // Create user_details record
-        const { error: detailsError } = await supabase
-          .from('user_details')
-          .insert([{
-            id: data.user.id,
-            email: email,
-            full_name: fullName,
-            role: role
-          }]);
-
-        if (detailsError) {
-          console.error('Error creating user details:', detailsError);
-          // Don't return error here as the user can still verify their email
-        }
         
         return { 
           success: true,
