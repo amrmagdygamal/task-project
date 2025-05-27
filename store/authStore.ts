@@ -207,25 +207,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 }));
 
-interface NotificationPayload {
-  to: string;
-  subject: string;
-  text: string;
-}
 
-async function sendRegistrationNotification(email: string, role: string): Promise<void> {
-  const payload: NotificationPayload = {
-    to: email,
-    subject: 'Registration Successful',
-    text: `You have successfully registered as a ${role}.`
-  };
 
-  await fetch('/api/notify', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-}
+
 
 type FormErrors = {
   fullName?: string;

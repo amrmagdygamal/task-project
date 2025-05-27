@@ -2,16 +2,16 @@ import { useEffect, useState, useCallback } from 'react';
 import Layout from '../components/Layout';
 import { supabase } from '../utils/supabase';
 import { useAuthStore } from '../store/authStore';
+import { useAdminVenuesStore } from '../store/adminVenuesStore';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Venue, Booking, VenueFormData } from '../types/venues';
 
 const Dashboard = () => {
   const { session, role } = useAuthStore();
+  const { venues, loading, fetchVenues } = useAdminVenuesStore();
   const router = useRouter();
 
-  const [venues, setVenues] = useState<Venue[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editVenue, setEditVenue] = useState<Venue | null>(null);
   const [form, setForm] = useState<VenueFormData>({
@@ -27,22 +27,6 @@ const Dashboard = () => {
   const [showBookings, setShowBookings] = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | '' }>({ message: '', type: '' });
-
-  const fetchVenues = useCallback(async () => {
-    if (!session?.user?.id) return;
-    
-    setLoading(true);    const { data, error } = await supabase.from('venues')
-      .select('*')
-      .eq('ownerId', session.user.id);
-    
-    if (error) {
-      console.error('Error fetching venues:', error);
-      setToast({ message: 'Failed to load venues', type: 'error' });
-    } else if (data) {
-      setVenues(data);
-    }
-    setLoading(false);
-  }, [session?.user?.id, setToast]);
   useEffect(() => {
     // Only redirect if we have a session but user is not an admin
     if (session && role !== 'admin') {
@@ -51,8 +35,8 @@ const Dashboard = () => {
     }
     
     // Fetch venues only if we have a session and user is an admin
-    if (session && role === 'admin') {
-      fetchVenues();
+    if (session?.user?.id && role === 'admin') {
+      fetchVenues(session.user.id);
     }
   }, [session, role, router, fetchVenues]);
 
@@ -176,10 +160,8 @@ const Dashboard = () => {
 
         if (insertError) throw insertError;
         setToast({ message: 'Venue created!', type: 'success' });
-      }
-
-      handleCloseModal();
-      fetchVenues();
+      }      handleCloseModal();
+      fetchVenues(session.user.id);
     } catch (error) {
       if (error instanceof Error) {
         setToast({ message: error.message, type: 'error' });
@@ -196,11 +178,9 @@ const Dashboard = () => {
       const { error } = await supabase
         .from('venues')        .delete()
         .eq('id', id)
-        .eq('ownerId', session.user.id);
-
-      if (error) throw error;
+        .eq('ownerId', session.user.id);      if (error) throw error;
       setToast({ message: 'Venue deleted.', type: 'success' });
-      fetchVenues();
+      fetchVenues(session.user.id);
     } catch (error) {
       if (error instanceof Error) {
         setToast({ message: error.message, type: 'error' });

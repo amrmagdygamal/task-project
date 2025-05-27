@@ -28,11 +28,7 @@ const BookingsPage = () => {
   const { success, session_id } = router.query;
 
   useEffect(() => {
-    if (!session) {
-      router.push('/login');
-      return;
-    }
-    
+
     fetchBookings();
   }, [session]);
 

@@ -14,19 +14,12 @@ interface Venue {
   created_at: string;
 }
 
-const VenuesPage = () => {
-  const { venues, loading, setVenues, setLoading } = useVenuesStore();
+const VenuesPage = () => {  const { venues, loading, fetchVenues } = useVenuesStore();
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | '' }>({ message: '', type: '' });
 
   useEffect(() => {
-    const fetchVenues = async () => {
-      setLoading(true);
-      const { data, error } = await supabase.from('venues').select('*');
-      if (!error && data) setVenues(data);
-      setLoading(false);
-    };
     fetchVenues();
-  }, [setVenues, setLoading]);
+  }, [fetchVenues]);
 
   const handleDownloadPDF = async (venue: Venue) => {
     try {
@@ -154,6 +147,7 @@ const VenuesPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {venues.map((venue) => (
             <div key={venue.id} className="bg-white rounded-xl shadow-lg p-4 fl-co-st-st h-full focus-within:ring-2 focus-within:ring-indigo-400" tabIndex={0} aria-label={`Venue: ${venue.name}`}>
+              
               <div className="relative w-full h-40 mb-3">
                 {venue.image_url && (
                   <Image 
@@ -165,13 +159,21 @@ const VenuesPage = () => {
                   />
                 )}
               </div>
+              <span className={`px-2 py-1 text-xs rounded-full ${
+                      venue.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {venue.available ? 'Available' : 'Not Available'}
+                    </span>
               <h2 className="text-xl font-semibold mb-1 text-indigo-700" tabIndex={0}>{venue.name}</h2>
               <p className="mb-1 text-gray-700"><b>Address:</b> {venue.address}</p>
               <p className="mb-1 text-gray-700"><b>Capacity:</b> {venue.capacity}</p>
               <p className="mb-2 text-indigo-700 font-semibold"><b>Day Price:</b> {venue.dayprice}</p>
               <div className="mt-auto fl-co-st-st gap-2 sm:flex-row">
-                <a href={`/venues/${venue.id}`} className="px-5 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 text-center text-base" aria-label={`View details for ${venue.name}`}>View Details</a>
-                <button onClick={() => handleDownloadPDF(venue)} className="px-5 py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-400 text-base" aria-label={`Download PDF for ${venue.name}`}>Download PDF</button>
+                {venue.available && (
+                    <a href={`/venues/${venue.id}`} className="px-5 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400 text-center text-base" aria-label={`View details for ${venue.name}`}>View Details</a>
+                )}
+            
+              
               </div>
             </div>
           ))}

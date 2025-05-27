@@ -115,7 +115,7 @@ const Auth = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don&apos;t have an account?{' '}
-              <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 font-medium">
+              <Link href="/acount" className="text-indigo-600 hover:text-indigo-700 font-medium">
                 Sign up
               </Link>
             </p>

@@ -7,17 +7,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const IndexPage = () => {
-  const { venues, loading, setVenues, setLoading } = useVenuesStore();
+  const { venues, loading, fetchVenues } = useVenuesStore();
 
   useEffect(() => {
-    const fetchVenues = async () => {
-      setLoading(true);
-      const { data, error } = await supabase.from('venues').select('*');
-      if (!error && data) setVenues(data);
-      setLoading(false);
-    };
     fetchVenues();
-  }, [setVenues, setLoading]);
+  }, [fetchVenues]);
+
+  console.log('Venues:', venues);
 
   return (
     <Layout>
@@ -51,18 +47,25 @@ const IndexPage = () => {
                                     />
                                   )}
                 </div>
-                
+                <span className={`px-2 py-1 text-xs rounded-full ${
+                      venue.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {venue.available ? 'Available' : 'Not Available'}
+                    </span>
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-gray-800 mb-2">{venue.name}</h2>
                   <p className="text-gray-600 mb-4 line-clamp-2">{venue.description}</p>
                   <div className="fl-ro-ce-be">
                     <div className="text-indigo-600 font-semibold">${venue.dayprice}/day</div>
+                    {venue.available && (
+
                     <Link
                       href={`/venues/${venue.id}`}
                       className="inline-fl-ro-ce-stpx-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                       View Details
                     </Link>
+                      )}
                   </div>
                 </div>
               </div>
