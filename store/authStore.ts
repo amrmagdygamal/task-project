@@ -133,17 +133,46 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
 
         // Do the auth signup with email redirect
-        const signupResponse = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            data: { full_name: fullName, role },
+            data: {
+              full_name: fullName,
+              role: role
+            },
             emailRedirectTo: `${window.location.origin}/dashboard`
           }
         });
 
-        if (!signupResponse?.data?.user) {
-          return { success: false, error: 'No user data received' };
+        if (error) {
+          console.error('Signup error:', error);
+          return {
+            success: false,
+            error: error.message
+          };
+        }
+
+        if (!data?.user) {
+          return { 
+            success: false, 
+            error: 'No user data received' 
+          };
+        }
+
+        // Create user_details record
+        const { error: detailsError } = await supabase
+          .from('user_details')
+          .insert([{
+            id: data.user.id,
+            email: email,
+            full_name: fullName,
+            role: role
+          }]);
+
+        if (detailsError) {
+          console.error('Error creating user details:', detailsError);
+          // Don't return error here as the user can still verify their email
         }
         
         return { 
