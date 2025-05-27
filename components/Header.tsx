@@ -41,12 +41,20 @@ const Header = () => {
             Logout
           </button>
         ) : (
+          <>
           <Link
             href="/login"
             className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
           >
             Login
           </Link>
+          <Link
+            href="/acount"
+            className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+          >
+            Signup
+          </Link>
+          </>
         )}
       </nav>
     </header>
