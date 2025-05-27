@@ -145,10 +145,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         if (!signupResponse?.data?.user) {
           return { success: false, error: 'No user data received' };
         }
-
-        // Wait a moment to ensure the user is created in the auth.users table
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
+        
         return { 
           success: true,
           message: 'Please check your email for the verification link.'
