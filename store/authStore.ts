@@ -149,22 +149,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         // Wait a moment to ensure the user is created in the auth.users table
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Create user_details record
-        const { error: detailsError } = await supabase
-          .from('user_details')
-          .insert([{
-            id: signupResponse.data.user.id,
-            email: email,
-            full_name: fullName,
-            role: role
-          }]);
-
-        if (detailsError) {
-          console.error('Error creating user details:', detailsError);
-          // If user_details creation fails, we should still allow the signup process
-          // as the user can verify their email and we can create user_details later
-        }
-        
         return { 
           success: true,
           message: 'Please check your email for the verification link.'
