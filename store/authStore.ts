@@ -121,14 +121,18 @@ export const useAuthStore = create<AuthState>((set) => ({
           success: false,
           error: 'All fields are required'
         };
-      }      try {
+      }
+
+      try {
         // First validate the email format
         if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
           return { 
             success: false, 
             error: 'Invalid email format' 
           };
-        }        // Do the auth signup with email redirect
+        }
+
+        // Do the auth signup with email redirect
         const signupResponse = await supabase.auth.signUp({
           email,
           password,
@@ -140,7 +144,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
         if (!signupResponse?.data?.user) {
           return { success: false, error: 'No user data received' };
-        }        // Create user_details record
+        }
+
+        // Wait a moment to ensure the user is created in the auth.users table
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Create user_details record
         const { error: detailsError } = await supabase
           .from('user_details')
           .insert([{
@@ -152,7 +161,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
         if (detailsError) {
           console.error('Error creating user details:', detailsError);
-          // Don't throw here as the user can still verify their email
+          // If user_details creation fails, we should still allow the signup process
+          // as the user can verify their email and we can create user_details later
         }
         
         return { 
