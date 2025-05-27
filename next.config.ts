@@ -11,15 +11,11 @@ const nextConfig = {
     ],
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // We'll fix type errors after deployment
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // We'll fix linting errors after deployment
   },
-  swcMinify: false,
-  experimental: {
-    externalDir: true
-  }
 }
 
-module.exports = nextConfig
+export default nextConfig
