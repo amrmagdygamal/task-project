@@ -21,7 +21,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (data?.user) {
-      // Initialize user_details after successful verification
+  
+      // console.log('User authenticated:', data.user);
+
+
       await initializeUserDetails(data.user.id);
 
       // Get role from user_details
@@ -31,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .eq('id', data.user.id)
         .single();
 
-      // Update user metadata if role exists in profile but not in metadata
+        // console.log('Profile data:', profileData);
       if (profileData?.role && !data.user.user_metadata?.role) {
         await supabase.auth.updateUser({
           data: { role: profileData.role }

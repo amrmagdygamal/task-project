@@ -5,14 +5,17 @@ import Layout from '../components/Layout';
 import { useAuthStore } from '../store/authStore';
 
 // Initialize Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 const PaymentPage = () => {
   const router = useRouter();
   const { session } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { venue_id, name, phone, startDate, endDate, days, finalPrice } = router.query;
+  const { venue_id, name, phone, startDate, endDate, days, finalPrice } =
+    router.query;
 
   useEffect(() => {
     if (!session) {
@@ -24,11 +27,18 @@ const PaymentPage = () => {
   }, [session, venue_id, finalPrice, router]);
 
   const handlePayment = async () => {
-    try {
-      setLoading(true);
-      setError('');
+    if (!session) return;
 
-      // Create payment session on the server
+    setLoading(true);
+    try {
+      const bookingIntent = {
+        venue_id,
+        user_id: session.user.id,
+        start_date: startDate,
+        end_date: endDate,
+        total_price: finalPrice,
+      };
+
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
@@ -42,7 +52,8 @@ const PaymentPage = () => {
           endDate,
           amount: finalPrice,
           days,
-          userId: session?.user?.id,
+          userId: session.user.id,
+          bookingIntent,
         }),
       });
 
@@ -65,7 +76,9 @@ const PaymentPage = () => {
       }
     } catch (err) {
       console.error('Payment error:', err);
-      setError(err instanceof Error ? err.message : 'Payment failed. Please try again.');
+      setError(
+        err instanceof Error ? err.message : 'Payment failed. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -76,24 +89,53 @@ const PaymentPage = () => {
   return (
     <Layout title="Payment">
       <div className="max-w-2xl mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-indigo-700">Complete Your Booking</h1>
-        
+        <h1 className="text-3xl font-bold mb-6 text-indigo-700">
+          Complete Your Booking
+        </h1>
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Booking Summary</h2>
+
           <div className="space-y-2">
-            <p><strong>Name:</strong> {name}</p>
-            <p><strong>Phone:</strong> {phone}</p>
-            <p><strong>Check-in:</strong> {startDate}</p>
-            <p><strong>Check-out:</strong> {endDate}</p>
-            <p><strong>Duration:</strong> {days} days</p>
+            <p>
+              <strong>Name:</strong>
+              {name}
+            </p>
+
+            <p>
+              <strong>Phone:</strong>
+              {phone}
+            </p>
+
+            <p>
+              <strong>Check-in:</strong>
+              {startDate}
+            </p>
+
+            <p>
+              <strong>Check-out:</strong>
+              {endDate}
+            </p>
+
+            <p>
+              <strong>Duration:</strong>
+              {days} days
+            </p>
+
             <p className="text-xl font-bold mt-4">
-              Total Amount: ${typeof finalPrice === 'string' ? parseFloat(finalPrice).toFixed(2) : '0.00'}
+              Total Amount: $
+              {typeof finalPrice === 'string'
+                ? parseFloat(finalPrice).toFixed(2)
+                : '0.00'}
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+            role="alert"
+          >
             {error}
           </div>
         )}

@@ -3,21 +3,31 @@ import Stripe from 'stripe';
 import { supabase } from '../../utils/supabase';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
+  apiVersion: '2022-11-15',
 });
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // console.log('Received request:', req.method, req.body);
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'process not allowed' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { venue_id, name, phone, startDate, endDate, amount, days, userId } = req.body;
+    const {
+      venue_id,
+      name,
+      phone,
+      startDate,
+      endDate,
+      amount,
+      days,
+      userId,
+    } = req.body;
 
-    // fetch venue details 
+    // fetch venue details
     const { data: venue } = await supabase
       .from('venues')
       .select('name, dayprice')
@@ -63,8 +73,8 @@ export default async function handler(
     });
   } catch (err) {
     console.error('Error:', err);
-    res.status(500).json({ 
-      error: err instanceof Error ? err.message : 'Payment failed' 
+    res.status(500).json({
+      error: err instanceof Error ? err.message : 'Payment failed',
     });
   }
 }

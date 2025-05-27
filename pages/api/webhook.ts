@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { supabase } from '../../utils/supabase';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
+  apiVersion: '2023-10-16',
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -32,36 +32,35 @@ export default async function handler(
     event = stripe.webhooks.constructEvent(buf, sig, endpointSecret!);
   } catch (err) {
     console.error('Webhook error:', err);
-    return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return res
+      .status(400)
+      .send(
+        `Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`
+      );
   }
 
   // Handle the event
   // console.log('Received event:', event.type);
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const metadata = session.metadata!;
-
     try {
-      // Create the reservation in the database
-      const { error: reservationError } = await supabase
-        .from('reservations')
-        .insert([
-          {
-            venue_id: metadata.venue_id,
-            userId: metadata.user_id,
-            startDate: metadata.start_date,
-            endDate: metadata.end_date,
-            name: metadata.name,
-            phone: metadata.phone,
-            payment_id: session.payment_intent as string,
-            amount_paid: session.amount_total ? session.amount_total / 100 : 0,
-            days: parseInt(metadata.days),
-          },
-        ]);
+      const session = event.data.object as Stripe.Checkout.Session;
+      const metadata = session.metadata!;
 
-      if (reservationError) {
-        console.error('Reservation error:', reservationError);
-        return res.status(500).json({ error: 'Failed to create reservation' });
+      // Create the booking in the database
+      const { error: bookingError } = await supabase.from('bookings').insert([
+        {
+          venue_id: metadata.venue_id,
+          user_id: metadata.user_id,
+          start_date: metadata.start_date,
+          end_date: metadata.end_date,
+          total_price: session.amount_total ? session.amount_total / 100 : 0,
+          payment_id: session.payment_intent as string,
+          status: 'confirmed',
+        },
+      ]);
+      if (bookingError) {
+        console.error('Booking error:', bookingError);
+        return res.status(500).json({ error: 'Failed to create booking' });
       }
     } catch (err) {
       console.error('Database error:', err);
