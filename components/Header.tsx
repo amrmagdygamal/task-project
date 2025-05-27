@@ -44,7 +44,7 @@ const Header = () => {
           <>
           <Link
             href="/login"
-            className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700"
+            className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 mr-2"
           >
             Login
           </Link>
